@@ -1,0 +1,2 @@
+// Auth Validator
+module.exports = {};
