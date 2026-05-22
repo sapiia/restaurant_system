@@ -1,2 +1,0 @@
-// User Repository
-module.exports = {};
