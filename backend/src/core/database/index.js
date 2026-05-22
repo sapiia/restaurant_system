@@ -1,15 +1,46 @@
-/**
- * Database connection entry point
- * Configure your ORM/database driver here (Prisma, Mongoose, Sequelize, etc.)
- */
+const mysql = require('mysql2/promise');
+const config = require('../../../config');
 
-// Example for Mongoose:
-// const mongoose = require('mongoose');
-// module.exports = () => mongoose.connect(process.env.MONGO_URI);
+let pool;
 
-// Example for Prisma:
-// const { PrismaClient } = require('@prisma/client');
-// const prisma = new PrismaClient();
-// module.exports = prisma;
+const createDatabaseIfMissing = async () => {
+  const connection = await mysql.createConnection({
+    host: config.db.host,
+    port: config.db.port,
+    user: config.db.user,
+    password: config.db.password,
+  });
 
-module.exports = {};
+  await connection.query(
+    `CREATE DATABASE IF NOT EXISTS ${mysql.escapeId(config.db.name)}`
+  );
+  await connection.end();
+};
+
+const connectDatabase = async () => {
+  if (pool) {
+    return pool;
+  }
+
+  await createDatabaseIfMissing();
+
+  pool = mysql.createPool({
+    host: config.db.host,
+    port: config.db.port,
+    user: config.db.user,
+    password: config.db.password,
+    database: config.db.name,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+  });
+
+  const connection = await pool.getConnection();
+  connection.release();
+
+  console.log(`MySQL connected to database "${config.db.name}"`);
+  return pool;
+};
+
+module.exports = connectDatabase;
+module.exports.getPool = () => pool;
