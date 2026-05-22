@@ -21,8 +21,12 @@ export class User {
         unique: true
     })
     role!: string;
-    @Column({ default: true })
+    @Column({ 
+      default: true 
+    })
     isActive!: boolean;
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    @Column({ 
+      type: "timestamp", default: () => "CURRENT_TIMESTAMP" 
+    })
     createdAt!: Date;
 }
