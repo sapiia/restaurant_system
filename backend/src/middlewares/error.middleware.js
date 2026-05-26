@@ -1,12 +1,12 @@
-/**
- * Global error handling middleware
- */
-const errorMiddleware = (err, req, res, next) => {
+export const errorMiddleware = (err, req, res, next) => {
   const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal server error';
+
   res.status(statusCode).json({
     success: false,
-    message: err.message || 'Internal Server Error',
+    statusCode,
+    message,
+    timestamp: new Date().toISOString(),
+    path: req.path,
   });
 };
-
-module.exports = errorMiddleware;

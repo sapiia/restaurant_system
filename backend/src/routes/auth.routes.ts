@@ -1,15 +1,27 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { AuthController } from '../controllers/AuthController.js';
 import { AuthService } from '../services/AuthService.js';
 import { UserRepository } from '../repositories/UserRepository.js';
+import { authMiddleware,  } from '../middlewares/authMiddleware.js';
+import { roleMiddleware } from '../middlewares/roleMiddleware.js';
 
 const router = Router();
 const userRepository = new UserRepository();
 const authService = new AuthService(userRepository);
 const authController = new AuthController(authService);
 
-router.get('/users', (req, res) => authController.getAllUsers(req, res));
-router.post('/login',    (req, res) => authController.login(req, res));
-router.post('/register', (req, res) => authController.register(req, res));
+// Public
+router.post('/login',(req: Request, res: Response) => authController.login(req, res));
+router.post('/register',(req: Request, res: Response) => authController.register(req, res));
+
+// Any logged-in user
+router.post('/logout',authMiddleware,(req: Request, res: Response) => authController.logout(req, res));
+router.put('/profile',authMiddleware,(req: Request, res: Response) => authController.updateProfile(req, res));
+
+// ADMIN only
+router.get('/users',authMiddleware, roleMiddleware('ADMIN'), (req: Request, res: Response) => authController.getAllUsers(req, res));
+router.get('/users/:email',authMiddleware, roleMiddleware('ADMIN'), (req: Request, res: Response) => authController.findByEmail(req, res));
+router.put('/users/:id',  authMiddleware, roleMiddleware('ADMIN'), (req: Request, res: Response) => authController.updateUser(req, res));
+router.delete('/users/:id',authMiddleware, roleMiddleware('ADMIN'), (req: Request, res: Response) => authController.deleteUser(req, res));
 
 export default router;
