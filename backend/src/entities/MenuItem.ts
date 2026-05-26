@@ -14,7 +14,7 @@ export class MenuItem {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: 'varchar', length: 150 })
+  @Column({ type: 'varchar', length: 255 })
   name!: string;
 
   @Column({ type: 'text', nullable: true })
