@@ -2,6 +2,8 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 import { Users } from "../entities/Users.js";
+import { Category } from "../entities/Category.js";
+import { MenuItem } from "../entities/MenuItem.js";
 
 dotenv.config();
 
@@ -19,7 +21,7 @@ export const AppDataSource = new DataSource({
     synchronize: true,
     logging: false,
 
-    entities: [Users],
+    entities: [Users, Category, MenuItem],
     migrations: [],
     subscribers: [],
 });
