@@ -1,33 +1,25 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne
-} from "typeorm";
-
-import { Order } from "./Order";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Orders } from "./Orders.js";
+import { MenuItem } from "./MenuItem.js";
 
 @Entity()
 export class OrderItem {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  menuItemId!: number;
+  @ManyToOne(() => Orders, (order) => order.items, {
+    onDelete: "CASCADE"
+  })
+  order!: Orders;
 
-  @Column()
+  @ManyToOne(() => MenuItem, {
+    onDelete: "CASCADE"
+  })
+  menuItem!: MenuItem;
+
+  @Column({ type: "int" })
   quantity!: number;
 
-  @Column("decimal")
-  price!: number;
-
-  @ManyToOne(
-    () => Order,
-    order => order.items,
-    {
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE"
-    }
-  )
-  order!: Order;
+  @Column({ type: "decimal", precision: 10, scale: 2 })
+  price!: string;
 }

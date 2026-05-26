@@ -1,10 +1,10 @@
-import { AppDataSource } from "../config/database";
-import { Order } from "../entities/Order";
+import { AppDataSource } from "../config/database.js";
+import { Orders } from "../entities/Orders.js";
 
 export class OrderRepository {
-  private repo = AppDataSource.getRepository(Order);
+  private repo = AppDataSource.getRepository(Orders);
 
-  create(data: Partial<Order>) {
+  create(data: Partial<Orders>) {
     return this.repo.save(data);
   }
 
@@ -29,7 +29,7 @@ export class OrderRepository {
     return this.repo.delete(id);
   }
 
-  save(order: Order) {
+  save(order: Orders) {
     return this.repo.save(order);
   }
 }

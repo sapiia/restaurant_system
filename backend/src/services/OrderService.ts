@@ -1,5 +1,5 @@
-import { OrderRepository } from "../repositories/OrderRepository";
-import { OrderStatus } from "../entities/Order";
+import { OrderRepository } from "../repositories/OrderRepository.js";
+import { OrderStatus } from "../entities/Orders.js";
 
 export class OrderService {
   private repo = new OrderRepository();
@@ -27,7 +27,7 @@ export class OrderService {
 
     if (!order) throw new Error("Order not found");
 
-    order.status = status;
+    order.orderStatus = status;
 
     return this.repo.save(order);
   }

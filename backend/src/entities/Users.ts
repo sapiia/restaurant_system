@@ -1,32 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class Users {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @Column({ type: 'varchar', nullable: false })
+  name!: string;
 
-    @Column()
-    name!: string;
+  @Column({ type: 'varchar', unique: true, nullable: false })
+  email!: string;
 
-    @Column({
-        unique: true  
-    })
-    email!: string;
+  @Column({ type: 'varchar', nullable: false })
+  password!: string;
 
-    @Column()
-    password!: string;
+  @Column({ type: 'enum', enum: ['ADMIN', 'CHEF', 'CASHIER', 'CUSTOMER'], default: 'CUSTOMER' })
+  role!: 'ADMIN' | 'CHEF' | 'CASHIER' | 'CUSTOMER';
 
-    @Column({
-        unique: true
-    })
-    role!: string;
-    @Column({ 
-      default: true 
-    })
-    isActive!: boolean;
-    @Column({ 
-      type: "timestamp", default: () => "CURRENT_TIMESTAMP" 
-    })
-    createdAt!: Date;
+  @Column({ type: 'boolean', default: true })
+  is_active!: boolean;
+
+  @CreateDateColumn()
+  created_at!: Date;
 }
