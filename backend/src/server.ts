@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import "reflect-metadata";
 import app from "./app.js";
 import { AppDataSource } from "./config/database.js";
 
