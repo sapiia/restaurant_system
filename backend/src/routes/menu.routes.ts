@@ -4,19 +4,21 @@ import {
   updateMenuItem, toggleAvailability, deleteMenuItem,
   getCategories, createCategory,
 } from '../controllers/MenuController.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
+import { roleMiddleware } from '../middlewares/roleMiddleware.js';
 
 const router = Router();
 
-// Categories
-router.get('/categories',     getCategories);
-router.post('/categories',    createCategory);
+// ── Categories ─────────────────────────────────────────────────────────
+router.get('/categories',              getCategories);
+router.post('/categories',             authMiddleware, roleMiddleware('ADMIN'), createCategory);
 
-// Menu Items
-router.get('/menu-items',          getMenuItems);
-router.get('/menu-items/:id',      getMenuItemById);
-router.post('/menu-items',         createMenuItem);
-router.patch('/menu-items/:id',    updateMenuItem);
-router.patch('/menu-items/:id/toggle', toggleAvailability);
-router.delete('/menu-items/:id',   deleteMenuItem);
+// ── Menu Items ─────────────────────────────────────────────────────────
+router.get('/items',              getMenuItems);
+router.get('/items/:id',          getMenuItemById);
+router.post('/items',             authMiddleware, roleMiddleware('ADMIN'), createMenuItem);
+router.patch('/items/:id',        authMiddleware, roleMiddleware('ADMIN'), updateMenuItem);
+router.patch('/items/:id/toggle', authMiddleware, roleMiddleware('ADMIN'), toggleAvailability);
+router.delete('/items/:id',       authMiddleware, roleMiddleware('ADMIN'), deleteMenuItem);
 
 export default router;

@@ -22,7 +22,7 @@ export enum PaymentStatus {
 
 @Entity()
 export class Orders {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   id!: number;
 
   @Column({type: "int"})

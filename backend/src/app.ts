@@ -12,12 +12,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(rateLimiter);
-app.use(errorMiddleware);
 
 
-// Order routes
+// routes
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api", menuRoutes);
+app.use("/api/menu", menuRoutes);
+
+app.use(errorMiddleware);
 
 export default app;

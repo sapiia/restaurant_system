@@ -1,5 +1,5 @@
-import { AppDataSource } from "../config/database.js";
-import { Orders } from "../entities/Orders.js";
+import { AppDataSource } from '../config/database.js';
+import { Orders } from '../entities/Orders.js';
 
 export class OrderRepository {
   private repo = AppDataSource.getRepository(Orders);
@@ -11,8 +11,11 @@ export class OrderRepository {
   findAll() {
     return this.repo.find({
       relations: {
-        items: true
-      }
+        items: {
+          menuItem: true,
+        },
+      },
+      order: { createdAt: 'DESC' },
     });
   }
 
@@ -20,8 +23,10 @@ export class OrderRepository {
     return this.repo.findOne({
       where: { id },
       relations: {
-        items: true
-      }
+        items: {
+          menuItem: true,
+        },
+      },
     });
   }
 

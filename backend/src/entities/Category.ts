@@ -6,8 +6,8 @@ import { MenuItem } from './MenuItem.js';
 
 @Entity('categories')
 export class Category {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  @PrimaryGeneratedColumn('increment')
+  id!: number;
 
   @Column({ type: 'varchar', length: 100, unique: true })
   name!: string;

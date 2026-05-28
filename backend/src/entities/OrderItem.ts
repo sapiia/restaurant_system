@@ -4,7 +4,7 @@ import { MenuItem } from "./MenuItem.js";
 
 @Entity()
 export class OrderItem {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   id!: number;
 
   @ManyToOne(() => Orders, (order) => order.items, {

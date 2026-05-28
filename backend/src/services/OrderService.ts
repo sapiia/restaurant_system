@@ -1,34 +1,53 @@
-import { OrderRepository } from "../repositories/OrderRepository.js";
-import { OrderStatus } from "../entities/Orders.js";
+import { OrderRepository } from '../repositories/OrderRepository.js';
+import { OrderStatus } from '../entities/Orders.js';
+import { MenuItemRepository } from '../repositories/MenuRepository.js';
 
 export class OrderService {
   private repo = new OrderRepository();
 
   async createOrder(data: any) {
-    const total = data.items.reduce(
-      (sum: number, item: any) =>
-        sum + item.price * item.quantity,
-      0
-    );
+    const { table_number, items } = data;
+
+    let total = 0;
+    const orderItems = [];
+
+    for (const item of items) {
+      const menuItem = await MenuItemRepository.findOne({
+        where: { id: Number(item.menu_item_id) },
+      });
+
+      if (!menuItem) throw new Error(`Menu item ${item.menu_item_id} not found`);
+      if (!menuItem.is_available) throw new Error(`Menu item ${menuItem.name} is not available`);
+
+      const itemTotal = Number(menuItem.price) * Number(item.quantity);
+      total += itemTotal;
+
+      orderItems.push({
+        menuItem: { id: menuItem.id },
+        quantity: Number(item.quantity),
+        price: String(Number(menuItem.price)),
+      });
+    }
 
     return this.repo.create({
-      tableNumber: data.tableNumber,
-      totalPrice: total,
-      items: data.items
+      tableNumber: Number(table_number),
+      totalPrice: String(total),
+      items: orderItems as any,
     });
   }
 
   async getOrders() {
     return this.repo.findAll();
   }
+  async getOrderById(id: number) {
+    return this.repo.findById(id);
+  }
 
   async updateStatus(id: number, status: OrderStatus) {
     const order = await this.repo.findById(id);
-
-    if (!order) throw new Error("Order not found");
+    if (!order) throw new Error('Order not found');
 
     order.orderStatus = status;
-
     return this.repo.save(order);
   }
 

@@ -15,6 +15,22 @@ export class OrderController {
 
     res.json(orders);
   };
+  getById = async (req: Request, res: Response) => {
+    try {
+      const order = await this.service.getOrderById(Number(req.params.id));
+      if (!order) {
+        res.status(404).json({ success: false, message: 'Order not found' });
+        return;
+      }
+      res.status(200).json({
+        success: true,
+        message: 'Order fetched successfully',
+        data: order,
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  };
 
   updateStatus = async (req: Request, res: Response) => {
     const order = await this.service.updateStatus(

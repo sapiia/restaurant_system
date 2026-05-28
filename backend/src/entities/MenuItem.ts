@@ -11,8 +11,8 @@ import { Category } from './Category.js';
 
 @Entity('menu_items')
 export class MenuItem {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  @PrimaryGeneratedColumn('increment')
+  id!: number;
 
   @Column({ type: 'varchar', length: 255 })
   name!: string;
@@ -26,8 +26,8 @@ export class MenuItem {
   @Column({ type: 'varchar', length: 500, nullable: true })
   image!: string | null;
 
-  @Column({ type: 'varchar', length: 36 })
-  category_id!: string;
+  @Column({ type: 'int' })
+  category_id!: number;
 
   @Column({ type: 'boolean', default: true })
   is_available!: boolean;
