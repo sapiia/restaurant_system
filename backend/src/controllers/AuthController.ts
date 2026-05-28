@@ -135,4 +135,22 @@ export class AuthController {
             });
         }
     }
+
+
+    async getProfile(req: Request, res: Response): Promise<void> {
+        try {
+            const id = Number(req.user!.id);
+            const profile = await this.authService.getProfile(id);
+            res.status(200).json({
+                success: true,
+                message: 'Profile fetched successfully',
+                data: profile,
+            });
+        } catch (error: any) {
+            res.status(404).json({
+                success: false,
+                message: error.message,
+            });
+        }
+    }
 }

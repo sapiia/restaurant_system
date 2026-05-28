@@ -15,7 +15,7 @@ interface RegisterDto {
 }
 
 export class AuthService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userRepository: UserRepository) { }
 
   async getAllUsers() {
     return this.userRepository.findAll();
@@ -92,5 +92,41 @@ export class AuthService {
 
   async logout() {
     return { message: 'Logged out successfully' };
+  }
+
+
+
+  async getProfile(id: number) {
+    const user = await this.userRepository.findById(id);
+    if (!user) throw new Error('User not found');
+
+    if (user.role === 'ADMIN') {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        is_active: user.is_active,
+        // is_verified: user.is_verified,
+        created_at: user.created_at,
+      };
+    }
+
+    if (user.role === 'CHEF' || user.role === 'CASHIER') {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        // is_verified: user.is_verified,
+      };
+    }
+
+    // CUSTOMER
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    };
   }
 }
