@@ -54,4 +54,33 @@ export class OrderService {
   async deleteOrder(id: number) {
     return this.repo.delete(id);
   }
+
+  async getOrdersByTable(tableNumber: number) {
+    return this.repo.findByTableNumber(tableNumber);
+  }
+
+  async getUnpaidByTable(tableNumber: number) {
+    return this.repo.findUnpaidByTableNumber(tableNumber);
+  }
+
+  async getAllUnpaid() {
+    const orders = await this.repo.findAllUnpaid();
+
+    // group by table number
+    const grouped = orders.reduce((acc: any, order) => {
+      const table = order.tableNumber;
+      if (!acc[table]) {
+        acc[table] = {
+          table_number: table,
+          orders: [],
+          total_unpaid: 0,
+        };
+      }
+      acc[table].orders.push(order);
+      acc[table].total_unpaid += Number(order.totalPrice);
+      return acc;
+    }, {});
+
+    return Object.values(grouped);
+  }
 }

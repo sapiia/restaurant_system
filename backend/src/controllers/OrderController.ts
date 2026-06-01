@@ -50,4 +50,43 @@ export class OrderController {
       message: "Deleted successfully"
     });
   };
+
+  getByTable = async (req: Request, res: Response) => {
+    try {
+      const orders = await this.service.getOrdersByTable(Number(req.params.table_number));
+      res.status(200).json({
+        success: true,
+        message: 'Orders fetched by table',
+        data: orders,
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  };
+
+  getUnpaidByTable = async (req: Request, res: Response) => {
+    try {
+      const orders = await this.service.getUnpaidByTable(Number(req.params.table_number));
+      res.status(200).json({
+        success: true,
+        message: 'Unpaid orders fetched by table',
+        data: orders,
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  };
+
+  getAllUnpaid = async (_: Request, res: Response) => {
+    try {
+      const grouped = await this.service.getAllUnpaid();
+      res.status(200).json({
+        success: true,
+        message: 'All unpaid orders grouped by table',
+        data: grouped,
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  };
 }

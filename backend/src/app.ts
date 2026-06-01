@@ -6,6 +6,7 @@ import { errorMiddleware } from './middlewares/errorMiddleware.js';
 
 import orderRoutes from "./routes/order.routes.js";
 import menuRoutes from "./routes/menu.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(rateLimiter);
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/menu", menuRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.use(errorMiddleware);
 
