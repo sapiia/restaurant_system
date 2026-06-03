@@ -39,7 +39,8 @@ class MenuService {
   }
 
   async createItem(dto: CreateMenuItemDto): Promise<MenuItem> {
-    const category = await CategoryRepository.findOneBy({ id: dto.category_id });
+    const categoryId = Number(dto.category_id);
+    const category = await CategoryRepository.findOneBy({ id: categoryId });
     if (!category) throw new Error('Category not found');
 
     const item = MenuItemRepository.create({
@@ -47,38 +48,39 @@ class MenuService {
       description: dto.description?.trim() ?? null,
       price: dto.price,
       image: this.normalizeImage(dto),
-      category_id: dto.category_id,
+      category_id: categoryId,
       is_available: dto.is_available ?? true,
     });
     return MenuItemRepository.save(item);
   }
 
   async updateItem(id: string, dto: UpdateMenuItemDto): Promise<MenuItem> {
-    const item = await MenuItemRepository.findOneBy({ id });
+    const item = await MenuItemRepository.findOneBy({ id: Number(id) });
     if (!item) throw new Error('Menu item not found');
 
     if (dto.category_id) {
-      const category = await CategoryRepository.findOneBy({ id: dto.category_id });
+      const category = await CategoryRepository.findOneBy({ id: Number(dto.category_id) });
       if (!category) throw new Error('Category not found');
     }
 
-    const { image_url, imageUrl, ...updates } = dto;
+    const { image_url, imageUrl, category_id: categoryId, ...updates } = dto;
     MenuItemRepository.merge(item, {
       ...updates,
+      ...(categoryId !== undefined ? { category_id: Number(categoryId) } : {}),
       image: this.normalizeImage({ image: dto.image, image_url, imageUrl }) ?? item.image,
     });
     return MenuItemRepository.save(item);
   }
 
   async toggleAvailability(id: string): Promise<MenuItem> {
-    const item = await MenuItemRepository.findOneBy({ id });
+    const item = await MenuItemRepository.findOneBy({ id: Number(id) });
     if (!item) throw new Error('Menu item not found');
     item.is_available = !item.is_available;
     return MenuItemRepository.save(item);
   }
 
   async deleteItem(id: string): Promise<void> {
-    const item = await MenuItemRepository.findOneBy({ id });
+    const item = await MenuItemRepository.findOneBy({ id: Number(id) });
     if (!item) throw new Error('Menu item not found');
     await MenuItemRepository.remove(item);
   }
