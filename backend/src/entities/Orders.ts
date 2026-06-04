@@ -5,6 +5,7 @@ import {
   OneToMany,
   CreateDateColumn,
 } from "typeorm";
+import { OrderItem } from "./OrderItem.js";
 
 export enum OrderStatus {
   PENDING = "PENDING",
@@ -47,14 +48,12 @@ export class Orders {
   @CreateDateColumn()
   createdAt!: Date;
 
-  // IMPORTANT: lazy import to avoid circular crash in ESM
   @OneToMany(
-    // cast to any to satisfy TypeScript typing for lazy ESM import
-    ((() => (import("./OrderItem.js").then(m => m.OrderItem) as unknown) as any)),
-    (item: any) => item.order,
+    () => OrderItem,
+    (item) => item.order,
     {
       cascade: true,
     }
   )
-  items!: any[];
+  items!: OrderItem[];
 }

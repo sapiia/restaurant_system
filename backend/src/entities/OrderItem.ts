@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import type { Orders } from "./Orders.js";
+import { Orders } from "./Orders.js";
 import { MenuItem } from "./MenuItem.js";
 
 @Entity("order_items")
@@ -7,11 +7,9 @@ export class OrderItem {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
-  // IMPORTANT: lazy import to avoid circular crash in ESM
   @ManyToOne(
-    // cast to any to satisfy TypeScript typing for lazy ESM import
-    (() => (import("./Orders.js").then(m => m.Orders) as unknown) as any),
-    (order: any) => order.items,
+    () => Orders,
+    (order) => order.items,
     {
       onDelete: "CASCADE",
     }
