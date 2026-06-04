@@ -25,13 +25,13 @@ export class OrderService {
       orderItems.push({
         menuItem: { id: menuItem.id },
         quantity: Number(item.quantity),
-        price: String(Number(menuItem.price)),
+        price: Number(menuItem.price),
       });
     }
 
     return this.repo.create({
       tableNumber: Number(table_number),
-      totalPrice: String(total),
+      totalPrice: total,
       items: orderItems as any,
     });
   }

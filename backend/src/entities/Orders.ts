@@ -3,53 +3,58 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  CreateDateColumn
+  CreateDateColumn,
 } from "typeorm";
-import { OrderItem } from "./OrderItem.js";
 
 export enum OrderStatus {
   PENDING = "PENDING",
   COOKING = "COOKING",
   READY = "READY",
   SERVED = "SERVED",
-  COMPLETED = "COMPLETED"
+  COMPLETED = "COMPLETED",
 }
 
 export enum PaymentStatus {
   UNPAID = "UNPAID",
-  PAID = "PAID"
+  PAID = "PAID",
 }
 
-@Entity()
+@Entity("orders")
 export class Orders {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn("increment")
   id!: number;
 
-  @Column({type: "int"})
+  @Column({ type: "int" })
   tableNumber!: number;
 
   @Column({
     type: "enum",
     enum: OrderStatus,
-    default: OrderStatus.PENDING
+    default: OrderStatus.PENDING,
   })
   orderStatus!: OrderStatus;
 
   @Column({
     type: "enum",
     enum: PaymentStatus,
-    default: PaymentStatus.UNPAID
+    default: PaymentStatus.UNPAID,
   })
   paymentStatus!: PaymentStatus;
 
   @Column("decimal", { precision: 10, scale: 2, default: 0 })
-  totalPrice!: string;
+  totalPrice!: number;
 
   @CreateDateColumn()
   createdAt!: Date;
 
-  @OneToMany(() => OrderItem, (item) => item.order, {
-    cascade: true
-  })
-  items!: OrderItem[];
+  // IMPORTANT: lazy import to avoid circular crash in ESM
+  @OneToMany(
+    // cast to any to satisfy TypeScript typing for lazy ESM import
+    ((() => (import("./OrderItem.js").then(m => m.OrderItem) as unknown) as any)),
+    (item: any) => item.order,
+    {
+      cascade: true,
+    }
+  )
+  items!: any[];
 }
