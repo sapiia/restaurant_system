@@ -4,16 +4,16 @@ import { Category } from '../entities/Category.js';
 
 export const MenuItemRepository = AppDataSource.getRepository(MenuItem).extend({
 
-  findAll(categoryId?: string) {
+  async findAll(categoryId?: string): Promise<MenuItem[]> {
     const qb = this.createQueryBuilder('item')
       .leftJoinAndSelect('item.category', 'category')
       .orderBy('item.created_at', 'DESC');
     if (categoryId) qb.where('item.category_id = :categoryId', { categoryId });
-    return qb.getMany();
+    return await qb.getMany();
   },
 
-  findByIdWithCategory(id: string) {
-    return this.createQueryBuilder('item')
+  async findByIdWithCategory(id: string): Promise<MenuItem | null> {
+    return await this.createQueryBuilder('item')
       .leftJoinAndSelect('item.category', 'category')
       .where('item.id = :id', { id })
       .getOne();
@@ -21,7 +21,7 @@ export const MenuItemRepository = AppDataSource.getRepository(MenuItem).extend({
 });
 
 export const CategoryRepository = AppDataSource.getRepository(Category).extend({
-  findAll() {
-    return this.find({ order: { name: 'ASC' } });
+  async findAll(): Promise<Category[]> {
+    return await this.find({ order: { name: 'ASC' } });
   },
 });

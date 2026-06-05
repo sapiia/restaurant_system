@@ -28,8 +28,8 @@ class MenuService {
 
   // ── Menu Items ─────────────────────────────────────────────────────────
 
-  getAllItems(categoryId?: string): Promise<MenuItem[]> {
-    return MenuItemRepository.findAll(categoryId);
+  async getAllItems(categoryId?: string): Promise<MenuItem[]> {
+    return await MenuItemRepository.findAll(categoryId);
   }
 
   async getItemById(id: string): Promise<MenuItem> {
@@ -50,7 +50,7 @@ class MenuService {
       category_id: dto.category_id,
       is_available: dto.is_available ?? true,
     });
-    return MenuItemRepository.save(item);
+    return await MenuItemRepository.save(item);
   }
 
   async updateItem(id: string, dto: UpdateMenuItemDto): Promise<MenuItem> {
@@ -67,14 +67,14 @@ class MenuService {
       ...updates,
       image: this.normalizeImage({ image: dto.image, image_url, imageUrl }) ?? item.image,
     });
-    return MenuItemRepository.save(item);
+    return await MenuItemRepository.save(item);
   }
 
   async toggleAvailability(id: string): Promise<MenuItem> {
     const item = await MenuItemRepository.findOneBy({ id });
     if (!item) throw new Error('Menu item not found');
     item.is_available = !item.is_available;
-    return MenuItemRepository.save(item);
+    return await MenuItemRepository.save(item);
   }
 
   async deleteItem(id: string): Promise<void> {
@@ -85,8 +85,8 @@ class MenuService {
 
   // ── Categories ─────────────────────────────────────────────────────────
 
-  getAllCategories(): Promise<Category[]> {
-    return CategoryRepository.findAll();
+  async getAllCategories(): Promise<Category[]> {
+    return await CategoryRepository.findAll();
   }
 
   async createCategory(dto: { name: string; description?: string }): Promise<Category> {
@@ -94,7 +94,7 @@ class MenuService {
       name: dto.name.trim(),
       description: dto.description?.trim() ?? null,
     });
-    return CategoryRepository.save(category);
+    return await CategoryRepository.save(category);
   }
 
   private normalizeImage(dto: Pick<CreateMenuItemDto, 'image' | 'image_url' | 'imageUrl'>): string | null {
