@@ -1,4 +1,5 @@
-import express from 'express';
+// import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import { rateLimiter } from './middlewares/rateLimiter.middleware.js';
@@ -20,6 +21,16 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/payments", paymentRoutes);
+
+//API info
+app.get('/', (_req: Request, res: Response) => {
+    res.json({
+        name: 'Restaurant Management System API',
+        status: 'Running',
+        version: '1.0.0',
+        description: 'API for managing restaurant operations including orders, menu, and payments.',
+    })
+})
 
 app.use(errorMiddleware);
 
